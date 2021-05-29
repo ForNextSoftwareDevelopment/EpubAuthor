@@ -4,7 +4,7 @@ Change the name of the author in a folder with epub files.
 I recently bought me an e-reader and noticed that the epubs I placed on it (which are on my pc in folders by author name) all had slightly different authors listed in the epub itself.
 Sometimes 'name sirname' or 'sirname, name' or.....
 
-So I wrote a little program that alters the epub and change the autor name to that of the folder itself.
+So I wrote a little program that alters the epub and changes the name of the author to that of the folder name.
 Be sure  to make a copy of the epubs before using the program, as I said it rewrites the 'opf' file in the epub.
 
 ![Screen1](https://user-images.githubusercontent.com/42140069/120082074-3c6e1300-c0c1-11eb-9000-3780462c7d35.png)
