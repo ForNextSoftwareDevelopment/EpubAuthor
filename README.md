@@ -8,9 +8,11 @@ So I wrote a little program that alters the epub and changes the name of the aut
 Be sure  to make a copy of the epubs before using the program, as I said it rewrites the 'opf' file in the epub.
 
 Before:
+
 ![Screen1](https://user-images.githubusercontent.com/42140069/120082074-3c6e1300-c0c1-11eb-9000-3780462c7d35.png)
 
 After:
+
 ![Screen2](https://user-images.githubusercontent.com/42140069/120082081-442db780-c0c1-11eb-805d-6436a9c58541.png)
 ---------------------------------------------------------
 
