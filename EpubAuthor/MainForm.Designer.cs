@@ -36,6 +36,9 @@ namespace EpubAuthor
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.dgvFiles = new System.Windows.Forms.DataGridView();
             this.btnStart = new System.Windows.Forms.Button();
+            this.chkSubDirectories = new System.Windows.Forms.CheckBox();
+            this.chkTitles = new System.Windows.Forms.CheckBox();
+            this.chkAddNameInTitle = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
             this.SuspendLayout();
             // 
@@ -77,7 +80,7 @@ namespace EpubAuthor
             this.dgvFiles.ReadOnly = true;
             this.dgvFiles.RowTemplate.Height = 25;
             this.dgvFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvFiles.Size = new System.Drawing.Size(760, 476);
+            this.dgvFiles.Size = new System.Drawing.Size(760, 451);
             this.dgvFiles.TabIndex = 2;
             // 
             // btnStart
@@ -93,11 +96,48 @@ namespace EpubAuthor
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
+            // chkSubDirectories
+            // 
+            this.chkSubDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkSubDirectories.AutoSize = true;
+            this.chkSubDirectories.Location = new System.Drawing.Point(629, 498);
+            this.chkSubDirectories.Name = "chkSubDirectories";
+            this.chkSubDirectories.Size = new System.Drawing.Size(143, 19);
+            this.chkSubDirectories.TabIndex = 4;
+            this.chkSubDirectories.Text = "Include Subdirectories";
+            this.chkSubDirectories.UseVisualStyleBackColor = true;
+            this.chkSubDirectories.Click += new System.EventHandler(this.chkSubDirectories_Click);
+            // 
+            // chkTitles
+            // 
+            this.chkTitles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkTitles.AutoSize = true;
+            this.chkTitles.Location = new System.Drawing.Point(12, 498);
+            this.chkTitles.Name = "chkTitles";
+            this.chkTitles.Size = new System.Drawing.Size(97, 19);
+            this.chkTitles.TabIndex = 5;
+            this.chkTitles.Text = "Change Titles";
+            this.chkTitles.UseVisualStyleBackColor = true;
+            // 
+            // chkAddNameInTitle
+            // 
+            this.chkAddNameInTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkAddNameInTitle.AutoSize = true;
+            this.chkAddNameInTitle.Location = new System.Drawing.Point(149, 498);
+            this.chkAddNameInTitle.Name = "chkAddNameInTitle";
+            this.chkAddNameInTitle.Size = new System.Drawing.Size(192, 19);
+            this.chkAddNameInTitle.TabIndex = 6;
+            this.chkAddNameInTitle.Text = "Include Subfolder Name in Title";
+            this.chkAddNameInTitle.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.chkAddNameInTitle);
+            this.Controls.Add(this.chkTitles);
+            this.Controls.Add(this.chkSubDirectories);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.dgvFiles);
             this.Controls.Add(this.tbFolder);
@@ -119,6 +159,9 @@ namespace EpubAuthor
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.DataGridView dgvFiles;
         private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.CheckBox chkSubDirectories;
+        private System.Windows.Forms.CheckBox chkTitles;
+        private System.Windows.Forms.CheckBox chkAddNameInTitle;
     }
 }
 

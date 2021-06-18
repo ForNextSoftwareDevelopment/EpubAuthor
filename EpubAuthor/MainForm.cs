@@ -45,12 +45,26 @@ namespace EpubAuthor
             }
         }
 
-        // Convert files and save
+        /// <summary>
+        /// Convert files and save
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>        
         private void btnStart_Click(object sender, EventArgs e)
         {
             ProcessFiles(true);
         }
 
+        /// <summary>
+        /// All subfolders included
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void chkSubDirectories_Click(object sender, EventArgs e)
+        {
+            ProcessFiles(false);
+        }
+ 
         #endregion
 
         #region Methods
@@ -73,7 +87,14 @@ namespace EpubAuthor
             dgvFiles.Columns.Add("author", "Author");
 
             // Get all epub files in the folder
-            string[] allFiles = Directory.GetFiles(tbFolder.Text, "*.epub");
+            string[] allFiles;
+            if (chkSubDirectories.Checked)
+            {
+                allFiles = Directory.GetFiles(tbFolder.Text, "*.epub", SearchOption.AllDirectories);
+            } else
+            {
+                allFiles = Directory.GetFiles(tbFolder.Text, "*.epub");
+            }
 
             string[] temp = tbFolder.Text.Split('\\');
             string newAuthor = temp[temp.Length - 1];
@@ -244,6 +265,13 @@ namespace EpubAuthor
                         try
                         {
                             nodeList = xmlDocument.GetElementsByTagName("dc:title");
+
+                            // No title found, try again
+                            if (nodeList.Count == 0)
+                            {
+                                nodeList = xmlDocument.GetElementsByTagName("title");
+                            }
+
                             foreach (XmlNode node in nodeList)
                             {
                                 title += node.InnerText;
@@ -258,6 +286,12 @@ namespace EpubAuthor
                         {
                             nodeList = xmlDocument.GetElementsByTagName("dc:creator");
 
+                            // No author found, try again
+                            if (nodeList.Count == 0)
+                            {
+                                nodeList = xmlDocument.GetElementsByTagName("creator");
+                            }
+
                             XmlNode parenNode = null;
                             string nameSpace = "";
                             while (nodeList.Count > 0)
@@ -267,6 +301,10 @@ namespace EpubAuthor
                                 nameSpace = nodeList[0].GetNamespaceOfPrefix("dc");
                                 parenNode.RemoveChild(nodeList[0]);
                                 nodeList = xmlDocument.GetElementsByTagName("dc:creator");
+                                if (nodeList.Count == 0)
+                                {
+                                    nodeList = xmlDocument.GetElementsByTagName("creator");
+                                }
                             }
 
                             // Add one
@@ -283,11 +321,49 @@ namespace EpubAuthor
                             }
                             while (xmlNamespaceManager.PopScope());
 
-                            XmlElement newElement = xmlDocument.CreateElement("dc:creator", nameSpace);
-                            newElement.SetAttribute("opf:role", "aut");
-                            newElement.SetAttribute("opf:file-as", newAuthor);
-                            newElement.InnerText = newAuthor;
-                            parenNode.PrependChild(newElement);
+                            XmlElement newCreatorElement = xmlDocument.CreateElement("dc:creator", nameSpace);
+                            newCreatorElement.SetAttribute("opf:role", "aut");
+                            newCreatorElement.SetAttribute("opf:file-as", newAuthor);
+                            newCreatorElement.InnerText = newAuthor;
+                            parenNode.PrependChild(newCreatorElement);
+
+                            // If no title or chkTitles checked then replace or create one (filename)
+                            if ((title == "") || chkTitles.Checked)
+                            {
+                                nodeList = xmlDocument.GetElementsByTagName("dc:title");
+
+                                // No title found, try again
+                                if (nodeList.Count == 0)
+                                {
+                                    nodeList = xmlDocument.GetElementsByTagName("title");
+                                }
+
+                                parenNode = null;
+                                nameSpace = "";
+                                while (nodeList.Count > 0)
+                                {
+                                    // Delete node
+                                    parenNode = nodeList[0].ParentNode;
+                                    nameSpace = nodeList[0].GetNamespaceOfPrefix("dc");
+                                    parenNode.RemoveChild(nodeList[0]);
+                                    nodeList = xmlDocument.GetElementsByTagName("dc:title");
+                                    if (nodeList.Count == 0)
+                                    {
+                                        nodeList = xmlDocument.GetElementsByTagName("title");
+                                    }
+                                }
+
+                                // Create new title element and add
+                                XmlElement newTitleElement = xmlDocument.CreateElement("dc:title", nameSpace);
+                                if (chkAddNameInTitle.Checked)
+                                {
+                                    if (temp.Length >= 2) title = temp[temp.Length - 2] + "-";
+                                }
+                                string[] name = fileName.Split(".epub");
+                                title += name[0];
+                                newTitleElement.InnerText = title;
+                                parenNode.PrependChild(newTitleElement);
+                            }
 
                             // Delete old 'opf' entry
                             contentEntry.Delete();
@@ -309,6 +385,13 @@ namespace EpubAuthor
                         try
                         {
                             nodeList = xmlDocument.GetElementsByTagName("dc:creator");
+
+                            // No author found, try again
+                            if (nodeList.Count == 0)
+                            {
+                                nodeList = xmlDocument.GetElementsByTagName("creator");
+                            }
+
                             foreach (XmlNode node in nodeList)
                             {
                                 if (author != "") author += " / ";
