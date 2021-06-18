@@ -7,6 +7,9 @@ Sometimes 'name sirname' or 'sirname, name' or.....
 So I wrote a little program that alters the epub and changes the name of the author to that of the folder name.
 Be sure  to make a copy of the epubs before using the program, as I said it rewrites the 'opf' file in the epub.
 
+18-6-2021:
+Added support for changing the title too.
+
 Before:
 
 ![Screen1](https://user-images.githubusercontent.com/42140069/120082074-3c6e1300-c0c1-11eb-9000-3780462c7d35.png)
