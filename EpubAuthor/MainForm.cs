@@ -284,99 +284,106 @@ namespace EpubAuthor
                         // If conversion is true, then delete all author nodes and replace with a new one
                         if (convert)
                         {
-                            nodeList = xmlDocument.GetElementsByTagName("dc:creator");
-
-                            // No author found, try again
-                            if (nodeList.Count == 0)
-                            {
-                                nodeList = xmlDocument.GetElementsByTagName("creator");
-                            }
-
-                            XmlNode parenNode = null;
-                            string nameSpace = "";
-                            while (nodeList.Count > 0)
-                            {
-                                // Delete node
-                                parenNode = nodeList[0].ParentNode;
-                                nameSpace = nodeList[0].GetNamespaceOfPrefix("dc");
-                                parenNode.RemoveChild(nodeList[0]);
-                                nodeList = xmlDocument.GetElementsByTagName("dc:creator");
-                                if (nodeList.Count == 0)
-                                {
-                                    nodeList = xmlDocument.GetElementsByTagName("creator");
-                                }
-                            }
-
-                            // Add one
-                            if (parenNode == null) parenNode = xmlDocument.DocumentElement;
                             XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager(xmlDocument.NameTable);
 
-                            string tmp = "";
-                            do
+                            // Get package nodes (only one should be present tho)
+                            XmlNodeList packageNodes = xmlDocument.GetElementsByTagName("package");
+
+                            // Get the 'Dublin Core' set (must be present here or in the metadata node)
+                            string nameSpacePrefix = "dc";
+                            string nameSpaceURI = "";
+                            foreach (XmlNode xmlNode in packageNodes)
                             {
-                                foreach (String prefix in xmlNamespaceManager)
+                                // Check if dc namespace prefix is present in attributes 
+                                foreach (XmlAttribute xmlAttribute in xmlNode.Attributes)
                                 {
-                                    tmp += String.Format("Prefix={0}, Namespace={1}\r\n", prefix, xmlNamespaceManager.LookupNamespace(prefix));
+                                    if ((xmlAttribute.Prefix == "xmlns") && (xmlAttribute.LocalName == nameSpacePrefix))
+                                    {
+                                        nameSpaceURI = xmlAttribute.Value;
+                                    }
                                 }
                             }
-                            while (xmlNamespaceManager.PopScope());
 
-                            XmlElement newCreatorElement = xmlDocument.CreateElement("dc:creator", nameSpace);
-                            newCreatorElement.SetAttribute("opf:role", "aut");
-                            newCreatorElement.SetAttribute("opf:file-as", newAuthor);
-                            newCreatorElement.InnerText = newAuthor;
-                            parenNode.PrependChild(newCreatorElement);
+                            // Get metadata nodes
+                            XmlNodeList metaDataNodes = xmlDocument.GetElementsByTagName("metadata");
 
-                            // If no title or chkTitles checked then replace or create one (filename)
-                            if ((title == "") || chkTitles.Checked)
+                            // Get the 'Dublin Core' set (must be present)
+                            XmlNode metaDataNode = null;
+                            foreach (XmlNode xmlNode in metaDataNodes)
                             {
-                                nodeList = xmlDocument.GetElementsByTagName("dc:title");
+                                if (metaDataNode == null) metaDataNode = xmlNode;
 
-                                // No title found, try again
-                                if (nodeList.Count == 0)
+                                // Check if dc namespace prefix is present in attributes 
+                                foreach (XmlAttribute xmlAttribute in xmlNode.Attributes)
                                 {
-                                    nodeList = xmlDocument.GetElementsByTagName("title");
+                                    if ((xmlAttribute.Prefix == "xmlns") && (xmlAttribute.LocalName == nameSpacePrefix))
+                                    {
+                                        nameSpaceURI = xmlAttribute.Value;
+                                        metaDataNode = xmlNode;
+                                    }
                                 }
+                            }
 
-                                parenNode = null;
-                                nameSpace = "";
+                            if (metaDataNode != null)
+                            {
+                                nodeList = xmlDocument.GetElementsByTagName("dc:creator");
+
                                 while (nodeList.Count > 0)
                                 {
                                     // Delete node
-                                    parenNode = nodeList[0].ParentNode;
-                                    nameSpace = nodeList[0].GetNamespaceOfPrefix("dc");
-                                    parenNode.RemoveChild(nodeList[0]);
-                                    nodeList = xmlDocument.GetElementsByTagName("dc:title");
-                                    if (nodeList.Count == 0)
-                                    {
-                                        nodeList = xmlDocument.GetElementsByTagName("title");
-                                    }
+                                    metaDataNode.RemoveChild(nodeList[0]);
+                                    nodeList = xmlDocument.GetElementsByTagName("dc:creator");
                                 }
 
-                                // Create new title element and add
-                                XmlElement newTitleElement = xmlDocument.CreateElement("dc:title", nameSpace);
-                                if (chkAddNameInTitle.Checked)
+                                XmlElement newCreatorElement = xmlDocument.CreateElement(nameSpacePrefix, "creator", nameSpaceURI);
+                                newCreatorElement.SetAttribute("opf:role", "aut");
+                                newCreatorElement.SetAttribute("opf:file-as", newAuthor);
+                                newCreatorElement.InnerText = newAuthor;
+                                metaDataNode.PrependChild(newCreatorElement);
+
+                                // If no title or chkTitles checked then replace or create one (filename)
+                                if ((title == "") || chkTitles.Checked)
                                 {
-                                    if (temp.Length >= 2) title = temp[temp.Length - 2] + "-";
+                                    nodeList = xmlDocument.GetElementsByTagName("dc:title");
+
+                                    while (nodeList.Count > 0)
+                                    {
+                                        // Delete node
+                                        metaDataNode.RemoveChild(nodeList[0]);
+                                        nodeList = xmlDocument.GetElementsByTagName("dc:title");
+                                    }
+
+                                    // Create new title element and add
+                                    XmlElement newTitleElement = xmlDocument.CreateElement(nameSpacePrefix, "title", nameSpaceURI);
+
+                                    if (chkAddNameInTitle.Checked)
+                                    {
+                                        if (temp.Length >= 2) title = temp[temp.Length - 2] + "-";
+                                    }
+
+                                    string[] name = fileName.Split(".epub");
+                                    title += name[0];
+                                    newTitleElement.InnerText = title;
+
+                                    metaDataNode.PrependChild(newTitleElement);
                                 }
-                                string[] name = fileName.Split(".epub");
-                                title += name[0];
-                                newTitleElement.InnerText = title;
-                                parenNode.PrependChild(newTitleElement);
+
+                                // Delete old 'opf' entry
+                                contentEntry.Delete();
+
+                                // Insert new 'opf' entry
+                                if (opfFile == "") opfFile = "content.opf";
+                                contentEntry = zipArchive.CreateEntry(opfFile);
+
+                                // Write xml
+                                StreamWriter streamWriter = new StreamWriter(contentEntry.Open());
+                                xmlDocument.Save(streamWriter);
+                                streamWriter.Close();
+                            } else
+                            {
+                                MessageBox.Show("No metadata found in: " + fileName + "\r\nThis file will be skipped", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
-
-                            // Delete old 'opf' entry
-                            contentEntry.Delete();
-
-                            // Insert new 'opf' entry
-                            if (opfFile == "") opfFile = "content.opf";
-                            contentEntry = zipArchive.CreateEntry(opfFile);
-
-                            // Write xml
-                            StreamWriter streamWriter = new StreamWriter(contentEntry.Open());
-                            xmlDocument.Save(streamWriter);
-                            streamWriter.Close();
-                        }
+                        } 
 
                         // Close zip
                         zipArchive.Dispose();
