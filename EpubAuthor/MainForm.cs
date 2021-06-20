@@ -81,7 +81,6 @@ namespace EpubAuthor
 
             // Create columns
             dgvFiles.Columns.Add("path", "Path");
-            dgvFiles.Columns["path"].Visible = false;
             dgvFiles.Columns.Add("file", "File");
             dgvFiles.Columns.Add("title", "Title");
             dgvFiles.Columns.Add("author", "Author");
@@ -368,6 +367,39 @@ namespace EpubAuthor
                                     metaDataNode.PrependChild(newTitleElement);
                                 }
 
+                                // If chkRemoveCalibre is checked then delete all calibre nodes
+                                if (chkRemoveCalibre.Checked)
+                                {
+                                    nodeList = xmlDocument.GetElementsByTagName("meta");
+
+                                    int index = 0;
+                                    while (index < nodeList.Count)
+                                    {
+                                        // Get attributes of this node
+                                        XmlAttributeCollection xmlAttributeCollection = nodeList[index].Attributes;
+
+                                        bool found = false;
+                                        foreach (XmlAttribute xmlAttribute in xmlAttributeCollection)
+                                        {
+                                            if (xmlAttribute.Value.ToString().Contains("calibre")) found = true;
+                                        }
+
+                                        if (found)
+                                        {
+                                            // Delete node
+                                            metaDataNode.RemoveChild(nodeList[index]);
+
+                                            // Refresh nodelist (and start again)
+                                            nodeList = xmlDocument.GetElementsByTagName("meta");
+                                            index = 0;
+                                        } else
+                                        {
+                                            // Next node
+                                            index++;
+                                        }
+                                    }
+                                }
+
                                 // Delete old 'opf' entry
                                 contentEntry.Delete();
 
@@ -381,7 +413,7 @@ namespace EpubAuthor
                                 streamWriter.Close();
                             } else
                             {
-                                MessageBox.Show("No metadata found in: " + fileName + "\r\nThis file will be skipped", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                MessageBox.Show("No (valid) metadata found in: " + fileName + "\r\nThis file will be skipped", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         } 
 

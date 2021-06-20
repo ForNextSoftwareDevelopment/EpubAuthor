@@ -39,6 +39,7 @@ namespace EpubAuthor
             this.chkSubDirectories = new System.Windows.Forms.CheckBox();
             this.chkTitles = new System.Windows.Forms.CheckBox();
             this.chkAddNameInTitle = new System.Windows.Forms.CheckBox();
+            this.chkRemoveCalibre = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
             this.SuspendLayout();
             // 
@@ -60,7 +61,7 @@ namespace EpubAuthor
             this.tbFolder.Location = new System.Drawing.Point(149, 12);
             this.tbFolder.Name = "tbFolder";
             this.tbFolder.ReadOnly = true;
-            this.tbFolder.Size = new System.Drawing.Size(623, 23);
+            this.tbFolder.Size = new System.Drawing.Size(474, 23);
             this.tbFolder.TabIndex = 1;
             // 
             // dgvFiles
@@ -98,9 +99,9 @@ namespace EpubAuthor
             // 
             // chkSubDirectories
             // 
-            this.chkSubDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkSubDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkSubDirectories.AutoSize = true;
-            this.chkSubDirectories.Location = new System.Drawing.Point(629, 498);
+            this.chkSubDirectories.Location = new System.Drawing.Point(629, 14);
             this.chkSubDirectories.Name = "chkSubDirectories";
             this.chkSubDirectories.Size = new System.Drawing.Size(143, 19);
             this.chkSubDirectories.TabIndex = 4;
@@ -125,16 +126,28 @@ namespace EpubAuthor
             this.chkAddNameInTitle.AutoSize = true;
             this.chkAddNameInTitle.Location = new System.Drawing.Point(149, 498);
             this.chkAddNameInTitle.Name = "chkAddNameInTitle";
-            this.chkAddNameInTitle.Size = new System.Drawing.Size(192, 19);
+            this.chkAddNameInTitle.Size = new System.Drawing.Size(176, 19);
             this.chkAddNameInTitle.TabIndex = 6;
-            this.chkAddNameInTitle.Text = "Include Subfolder Name in Title";
+            this.chkAddNameInTitle.Text = "Add Subfolder Name to Title";
             this.chkAddNameInTitle.UseVisualStyleBackColor = true;
+            // 
+            // chkRemoveCalibre
+            // 
+            this.chkRemoveCalibre.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkRemoveCalibre.AutoSize = true;
+            this.chkRemoveCalibre.Location = new System.Drawing.Point(639, 498);
+            this.chkRemoveCalibre.Name = "chkRemoveCalibre";
+            this.chkRemoveCalibre.Size = new System.Drawing.Size(133, 19);
+            this.chkRemoveCalibre.TabIndex = 7;
+            this.chkRemoveCalibre.Text = "Remove Calibre Info";
+            this.chkRemoveCalibre.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.chkRemoveCalibre);
             this.Controls.Add(this.chkAddNameInTitle);
             this.Controls.Add(this.chkTitles);
             this.Controls.Add(this.chkSubDirectories);
@@ -162,6 +175,7 @@ namespace EpubAuthor
         private System.Windows.Forms.CheckBox chkSubDirectories;
         private System.Windows.Forms.CheckBox chkTitles;
         private System.Windows.Forms.CheckBox chkAddNameInTitle;
+        private System.Windows.Forms.CheckBox chkRemoveCalibre;
     }
 }
 
