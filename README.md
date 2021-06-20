@@ -10,6 +10,9 @@ Be sure  to make a copy of the epubs before using the program, as I said it rewr
 18-6-2021:
 Added support for changing the title too.
 
+20-6-2021:
+Option added to remove calibre metadata.
+
 Before:
 
 ![Screen1](https://user-images.githubusercontent.com/42140069/120082074-3c6e1300-c0c1-11eb-9000-3780462c7d35.png)
