@@ -13,6 +13,9 @@ Added support for changing the title too.
 20-6-2021:
 Option added to remove calibre metadata.
 
+28-12-2022
+'Change Title' added the filename to the title, now it replaces it
+
 Before:
 
 ![Screen1](https://user-images.githubusercontent.com/42140069/120082074-3c6e1300-c0c1-11eb-9000-3780462c7d35.png)
