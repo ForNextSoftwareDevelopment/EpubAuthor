@@ -361,7 +361,7 @@ namespace EpubAuthor
                                     }
 
                                     string[] name = fileName.Split(".epub");
-                                    title += name[0];
+                                    title = name[0];
                                     newTitleElement.InnerText = title;
 
                                     metaDataNode.PrependChild(newTitleElement);
